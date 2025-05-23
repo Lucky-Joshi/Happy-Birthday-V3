@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday 🎉</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Antique:wght@400;700&family=Dancing+Script&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root {
+      --accent: #ff69b4;
+      --text: #fff;
+      --font-main: 'Shippori Antique', sans-serif;
+      --font-fancy: 'Dancing Script', cursive;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: url('./assets/wp9.jpg') center/cover no-repeat;
+      overflow: hidden;
+      color: var(--text);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(3px);
+      z-index: -1;
+    }
+
+    h1 {
+      font-family: var(--font-fancy);
+      font-size: 40px;
+      text-align: center;
+      margin: 30px 0 10px;
+    }
+
+    .content {
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 25px;
+      margin: 20px auto;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.6s ease;
+      display: none;
+    }
+
+    .card.active {
+      display: block;
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .card.exit {
+      opacity: 0;
+      transform: translateX(-100%);
+      transition: all 0.6s ease;
+    }
+
+    .card img {
+      width: 100px;
+      margin: 15px 0;
+    }
+
+    .next-heart {
+      font-size: 32px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .next-heart:hover {
+      transform: scale(1.3);
+    }
+
+    footer {
+      position: fixed;
+      bottom: 10px;
+      right: 20px;
+      font-size: 12px;
+      opacity: 0.2;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="overlay"></div>
+  <h1>Happy Birthday 🎂</h1>
+
+  <div class="content">
+    <div style="text-align:right; margin-bottom: -10px;">
+      <button id="music-btn" onclick="toggleMusic()" style="background:none;border:none;cursor:pointer;font-size:22px;" title="Play/Pause Music">🎵</button>
+    </div>
+  <audio id="bg-music" loop>
+    <source src="./assets/happy-birthday.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+    <div class="card active" id="card0">
+      <p>Click the gift to begin!</p>
+      <img src="./assets/kadoin.png" onclick="start()" style="cursor:pointer;">
+    </div>
+
+    <div class="card" id="card1">
+      <p id="msg1">🎉</p>
+      <div class="next-heart" onclick="next()">💗</div>
+    </div>
+
+    <div class="card" id="card2">
+      <p id="msg2"></p>
+      <img src="./assets/bunga.gif" />
+      <div class="next-heart" onclick="next()">💗</div>
+    </div>
+
+    <div class="card" id="card3">
+      <p>Guess what? You're getting older! 😜</p>
+      <img src="./assets/pandacoklat.gif" />
+      <div class="next-heart" onclick="next()">💗</div>
+    </div>
+
+    <div class="card" id="card4">
+      <p>Wishing you love, joy, and unlimited cake! 🎂🎈</p>
+      <img src="./assets/pandakuning.gif" />
+      <div class="next-heart" onclick="next()">💗</div>
+    </div>
+
+    <div class="card" id="card5">
+      <p>You’re one of a kind. Stay amazing 🌟</p>
+      <img src="./assets/emawh.gif" />
+      <div class="next-heart" onclick="next()">💗</div>
+    </div>
+
+    <div class="card" id="card6">
+      <p>Final message: Enjoy your day to the fullest! 🥳</p>
+      <img src="./assets/pusn.gif" />
+      <div class="next-heart" onclick="wish()">💗</div>
+    </div>
+  </div>
+
+  <footer>© Lucky Joshi</footer>
+
+  <script>
+    let musicPlaying = false;
+    const music = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('music-btn');
+
+    function toggleMusic() {
+      if (!musicPlaying) {
+        music.play();
+        musicPlaying = true;
+        musicBtn.innerText = '🔊';
+      } else {
+        music.pause();
+        musicPlaying = false;
+        musicBtn.innerText = '🎵';
+      }
+    }
+    let username = "";
+    let current = 0;
+
+    function start() {
+      Swal.fire({
+        title: "Your Name?",
+        input: "text",
+        inputValidator: (v) => !v ? "Please enter your name" : null
+      }).then(res => {
+        if (res.value) {
+          username = res.value;
+          document.getElementById("msg1").innerText = `Hey ${username}! 🎈`;
+          document.getElementById("msg2").innerText = `Thankyou for wishing me a happy birthday! 🎉`;
+          // Try to play music after user interaction
+          if (!musicPlaying) {
+            // Check if browser can play mp3
+            const canPlay = music.canPlayType('audio/mpeg');
+            if (canPlay === 'probably' || canPlay === 'maybe') {
+              music.play().then(() => {
+                musicPlaying = true;
+                musicBtn.innerText = '🔊';
+              }).catch(() => {
+                // Autoplay might still be blocked, but user interacted so should work
+              });
+            } else {
+              Swal.fire({
+                icon: 'info',
+                title: 'Music not supported',
+                text: 'Sorry, your browser does not support background music playback.'
+              });
+            }
+          }
+          next();
+        }
+      });
+    }
+
+    function next() {
+      let currentCard = document.getElementById(`card${current}`);
+      let nextCard = document.getElementById(`card${current + 1}`);
+      if (nextCard) {
+        currentCard.classList.remove("active");
+        currentCard.classList.add("exit");
+        setTimeout(() => {
+          currentCard.style.display = "none";
+          nextCard.style.display = "block";
+          nextCard.classList.add("active");
+          current++;
+        }, 600);
+      }
+    }
+
+    function wish() {
+      Swal.fire({
+        title: "Ready to Wish?",
+        confirmButtonText: "Send ❤️",
+        confirmButtonColor: "#ff69b4"
+      }).then(() => {
+        window.location.href = `https://wa.me/?text=Happy%20Birthday%20${username}!%20🎉🎂`;
+      });
+    }
+  </script>
+</body>
+</html>
